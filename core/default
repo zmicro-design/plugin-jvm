@@ -12,4 +12,11 @@ jvm::default() {
   jabba alias default $version
 }
 
+jvm::get_default_version() {
+  jvm::prepare
+
+  jabba alias default
+}
+
 export -f jvm::default
+export -f jvm::get_default_version

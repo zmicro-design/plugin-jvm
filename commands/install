@@ -19,7 +19,7 @@ core() {
     version=$PLUGIN_JVM_JAVA_DEFAULT_VERSION
   fi
 
-  log::info "installing $version"
+  log::info "installing $version ..."
   jvm::install $version
   if [ "$?" != "0" ]; then
     log::error "failed to install $version"

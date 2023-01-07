@@ -10,6 +10,11 @@ jvm::install() {
   jvm::prepare
 
   jabba install $version
+
+  if [ -z "$(jvm::get_default_version)" ]; then
+    log::info "[$(timestamp)] config default version: $version"
+    jvm::default $version
+  fi
 }
 
 # jvm::install install go version
