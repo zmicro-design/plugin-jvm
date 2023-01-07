@@ -11,7 +11,8 @@ core() {
     exit 0
   fi
 
-  echo $PLUGIN_JVM_JAVA_BIN
+  # echo $PLUGIN_JVM_JAVA_BIN
+  which java
 }
 
 run() {
