@@ -2,7 +2,7 @@
 
 # jvm::prepare prepare info
 jvm::prepare() {
-  [ -s "/Users/zero/.jabba/jabba.sh" ] && source "/Users/zero/.jabba/jabba.sh"
+  [ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
 
   net::using_smart_proxy
 }
