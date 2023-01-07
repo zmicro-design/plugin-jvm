@@ -1,0 +1,113 @@
+#!/bin/bash
+
+# vm::os get the system os
+vm::os() {
+  local os="linux"
+
+  uname -a | grep "Darwin" >>/dev/null 2>&1
+  if [ $? == 0 ]; then
+    os=darwin
+  fi
+
+  echo $os
+}
+
+# vm::arch gets the system arch
+vm::arch() {
+  local arch="amd64"
+
+  uname -m | grep "arm64" >>/dev/null 2>&1
+  if [ $? == 0 ]; then
+    arch=arm64
+  fi
+
+  uname -m | grep "aarch" >>/dev/null 2>&1
+  if [ $? == 0 ]; then
+    arch=arm64
+  fi
+
+  echo $arch
+}
+
+# vm::tool_ensure ensures that the tool is installed.
+vm::tool_ensure() {
+  local tool=$1
+  which $tool >>/dev/null 2>&1
+  if [ "$?" != "0" ]; then
+    pm install $tool
+  fi
+}
+
+# vm::sudo_ensure ensures sudo permissions
+vm::sudo_ensure() {
+  # @TODO force sudo
+  sudo ls >>/dev/null 2>&1
+}
+
+# vm::ensure ensures that the necessary tools are installed and sudo.
+vm::ensure() {
+  vm::sudo_ensure
+  # vm::tool_ensure wget
+  vm::tool_ensure curl
+}
+
+# fix version: v1.15.7 => 1.15.7
+vm::version_remove_v() {
+  local version=$1
+  echo ${version#v}
+}
+
+# vm::version_parse remove the prefix v
+# example: v1.15.7 => 1.15.7
+vm::version_parse() {
+  local version=$(vm::version_remove_v "$@")
+  if [ -z "$1" ] || [ -z "$version" ]; then
+    log::error "[vm::version_parse] version is required"
+    exit 1
+  fi
+
+  echo $version
+}
+
+vm::version_ensure_prefix_v() {
+  local version=$1
+  if [ -z "$version" ]; then
+    log::error "[vm::version_ensure_prefix_v] version is required"
+    exit 1
+  fi
+
+  if [ "${version:0:1}" != "v" ]; then
+    version="v$version"
+  fi
+
+  echo $version
+}
+
+jvm::has() {
+  local version=$1
+  if [ -z "$version" ]; then
+    log::error "[jvm::has] version is required"
+    return 1
+  fi
+
+  local path=$PLUGIN_JVM_VERSIONS/$version
+  if [ ! -d "$path" ]; then
+    echo "false"
+  else
+    echo "true"
+  fi
+}
+
+export -f vm::os
+export -f vm::arch
+
+export -f vm::tool_ensure
+export -f vm::sudo_ensure
+
+export -f vm::ensure
+
+export -f vm::version_remove_v
+export -f vm::version_parse
+export -f vm::version_ensure_prefix_v
+
+export -f jvm::has

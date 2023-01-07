@@ -1,0 +1,59 @@
+#!/bin/bash
+
+jvm::use() {
+  local version="$1"
+  if [ -z "$version" ]; then
+    log::error "[$(timestamp)] version is required"
+    return 1
+  fi
+
+  jvm::prepare
+
+  jabba use $version
+}
+
+# jvm::use change the current version of go
+jvm::use_TODO() {
+  local version=$1
+  if [ -z "$version" ]; then
+    log::error "[jvm::use] version is required"
+    return 1
+  fi
+
+  # smart detect
+  version=$(vm::version_ensure_prefix_v $version)
+
+  if [ ! -d "$PLUGIN_JVM_VERSIONS/$version" ]; then
+    # log::error "[jvm::use] version $version not found"
+    # exit 1
+    jvm::install $version
+    jvm::use $version
+    return
+  fi
+
+  # @TODO force sudo
+  sudo ls >>/dev/null 2>&1
+
+  if [ -d $PLUGIN_JVM_JAVA_HOME ]; then
+    # if not a link
+    file $PLUGIN_JVM_JAVA_HOME | grep symbolic >>/dev/null 2>&1
+    if [ "$?" != "0" ]; then
+      sudo rm -rf $PLUGIN_JVM_JAVA_HOME
+    else
+      sudo rm -f $PLUGIN_JVM_JAVA_HOME
+    fi
+  fi
+
+  if [ ! -d "/usr/local/bin" ]; then
+    sudo mkdir -p /usr/local/bin
+  fi
+
+  sudo ln -sf $PLUGIN_JVM_VERSIONS/$version $PLUGIN_JVM_JAVA_HOME
+  sudo ln -sf $PLUGIN_JVM_JAVA_HOME/bin/go /usr/local/bin/go
+  echo $version >$PLUGIN_JVM_VERSION_CURRENT
+
+  # apply env
+  jvm::env
+}
+
+export -f jvm::use

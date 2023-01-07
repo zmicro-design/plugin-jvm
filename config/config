@@ -1,0 +1,35 @@
+export PLUGIN_JVM_NAME=jvm
+
+export PLUGIN_JVM_DATA=$(plugin::get_app_data_path $PLUGIN_JVM_NAME)
+export PLUGIN_JVM_LOGS=$(plugin::get_app_logs_path $PLUGIN_JVM_NAME)
+export PLUGIN_JVM_CONFIG=$(plugin::get_app_configs_path $PLUGIN_JVM_NAME)/config
+
+export PLUGIN_JVM_VERSIONS=${PLUGIN_JVM_DATA}/versions
+export PLUGIN_JVM_VERSION_CURRENT=${PLUGIN_JVM_DATA}/current
+
+export PLUGIN_JVM_JAVA_DEFAULT_VERSION=zulu@1.11.0
+export PLIGIN_JVM_JAVA_LTS_VERSION=zulu@1.11.0
+export PLUGIN_JVM_JAVA_HOME=/usr/local/go
+export PLUGIN_JVM_JAVA_BIN=$PLUGIN_JVM_JAVA_HOME/bin
+export PLUGIN_JVM_JAVA_PATH=$HOME/.go
+export PLUGIN_JVM_JAVA_DOWNLOAD_TMP=/tmp/go.tar.gz
+export PLUGIN_JVM_JAVA_SOURCE_JAVAOGLE=https://golang.google.cn/dl
+export PLUGIN_JVM_JAVA_SOURCE_QINIU=https://gomirrors.org/dl/go
+
+export PLUGIN_JVM_JAVA_SOURCE=${PLUGIN_JVM_JAVA_SOURCE:-$PLUGIN_JVM_JAVA_SOURCE_JAVAOGLE}
+
+if [ -n "$JAVA_SOURCE" ]; then
+  PLUGIN_JVM_JAVA_SOURCE=$JAVA_SOURCE
+fi
+
+if [ ! -d "$PLUGIN_JVM_VERSIONS" ]; then
+  mkdir -p $PLUGIN_JVM_VERSIONS
+fi
+
+if [ ! -f "$PLUGIN_JVM_VERSION_CURRENT" ]; then
+  touch $PLUGIN_JVM_VERSION_CURRENT
+fi
+
+if [ ! -d "$PLUGIN_JVM_JAVA_PATH" ]; then
+  mkdir -p $PLUGIN_JVM_JAVA_PATH
+fi

@@ -1,0 +1,52 @@
+#!/bin/bash
+
+name() {
+  local version=$(plugin::get_version $PLUGIN_JVM_NAME)
+  echo "Java Version Manager ($(color::success $version))"
+}
+
+description() {
+  echo "Java Version Manager is a tool for managing multiple Java versions."
+}
+
+usage() {
+  echo "Usage:"
+  echo "  jvm install <version>   - Install Java version"
+  echo "  jvm use <version>       - Use Java version"
+  echo "  jvm remove <version>    - Remove Java version"
+  echo "  jvm ls                  - List the Java versions installed"
+  echo "  jvm ls-remote           - List all Java versions from remote"
+  echo "  jvm current             - Show current Java version"
+  echo "  jvm exec                - Enter new shell with go version for tmp"
+  echo "  jvm home <version>      - Show the specific JAVA_HOME" 
+  echo "  jvm default <version>   - Set default Java version"
+  echo "  jvm help                - Show help"
+}
+
+example() {
+  echo "Example:"
+  echo "  jvm install $PLUGIN_JVM_JAVA_DEFAULT_VERSION"
+  echo "  jvm use $PLUGIN_JVM_JAVA_DEFAULT_VERSION"
+  echo "  jvm remove $PLUGIN_JVM_JAVA_DEFAULT_VERSION"
+  echo "  jvm ls"
+  echo "  jvm ls-remote"
+  echo "  jvm current"
+  echo "  jvm home ${PLUGIN_JVM_JAVA_DEFAULT_VERSION}"
+  echo "  jvm default ${PLUGIN_JVM_JAVA_DEFAULT_VERSION}"
+}
+
+core() {
+  name
+  echo ""
+  description
+  echo ""
+  usage
+  echo ""
+  example
+}
+
+run() {
+  core $@
+}
+
+run $@

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+load inquirer
+
+help() {
+  echo "Usage:"
+  echo "  jvm remove"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local version=$1
+
+  if [ -z "$version" ]; then
+    local availables=($(jvm::list))
+    inquirer::select "Select ?" availables version
+  fi
+
+  if [ "$(jvm::current)" = "$version" ]; then
+    local yesno=(No yes)
+    inquirer::select "Select ?" yesno confirm
+    if [ "$confirm" = "No" ]; then
+      exit 0
+    fi
+  fi
+
+  jvm::remove $version
+  if [ "$?" != "0" ]; then
+    log::error "failed to remove $version"
+    exit 1
+  fi
+
+  log::success "remove ${version} success"
+
+  if [ -n "$(jvm::current)" ]; then
+    echo "current: $(jvm::current) ($(go version))"
+  fi
+}
+
+run() {
+  core $@
+}
+
+run $@

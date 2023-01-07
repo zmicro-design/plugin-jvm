@@ -1,0 +1,162 @@
+#!/bin/bash
+
+jvm::install() {
+  local version="$1"
+  if [ -z "$version" ]; then
+    log::error "[$(timestamp)] version is required"
+    return 1
+  fi
+
+  jvm::prepare
+
+  jabba install $version
+}
+
+# jvm::install install go version
+jvm::install_TODO() {
+  vm::ensure
+
+  # @TODO
+  # 1. get version (vm::version_parse only use in install)
+  local version=$(vm::version_parse $1)
+
+  if [ "$(jvm::has v${version})" = "true" ]; then
+    # use version
+    jvm::use v${version}
+
+    # @TODO fix env apply
+    jvm::env
+    # exit 0
+    return
+  fi
+
+  # 2. get download url
+  local url=$(jvm::internal_install_get_download_url $version)
+  # 3. download
+  jvm::internal_install_download $version $url
+  if [ "$?" != "0" ]; then
+    log::error "[jvm::install] failed to install (version: $version, url: $url)"
+    return 1
+  fi
+
+  # 4. apply local
+  jvm::internal_install_apply_local $version
+  if [ "$?" != "0" ]; then
+    log::error "[jvm::install] failed to apply env(version: $version, url: $url)"
+    return 1
+  fi
+
+  # if no current, set current
+  if [ "$(jvm::current)" == "" ]; then
+    jvm::use $version
+    if [ "$?" != "0" ]; then
+      log::error "[$(timestamp)] failed to use node ${version}."
+      return 1
+    fi
+  else
+    # @TODO fix env apply
+    jvm::env
+    if [ "$?" != "0" ]; then
+      log::error "[$(timestamp)] failed to apply node env."
+      return 1
+    fi
+  fi
+}
+
+# jvm::internal_install_get_download_url get download url
+jvm::internal_install_get_download_url() {
+  local version=$1
+  local os=$(vm::os)
+  local arch=$(vm::arch)
+
+  local filename=go${version}.${os}-${arch}.tar.gz
+
+  # force cn mirror
+  if [ -n "${FORCE_CN}" ]; then
+    export PLUGIN_JVM_JAVA_SOURCE=${PLUGIN_JVM_JAVA_SOURCE_QINIU}
+  elif [ "$(net::is_google_visitable)" = "false" ]; then
+    export PLUGIN_JVM_JAVA_SOURCE=${PLUGIN_JVM_JAVA_SOURCE_QINIU}
+  fi
+
+  local tar_gz_url=${PLUGIN_JVM_JAVA_SOURCE}/$filename
+
+  # # custom source
+  # if [ -n "${JAVA_SOURCE}" ]; then
+  #   tar_gz_url=${JAVA_SOURCE}/$filename
+  # fi
+
+  echo $tar_gz_url
+}
+
+jvm::internal_install_download() {
+  local version=$1
+  local tar_gz_url=$2
+  if [ -z "$version" ]; then
+    log::error "[jvm::internal_install_download] version is required"
+    return 1
+  fi
+
+  if [ -z "$tar_gz_url" ]; then
+    log::error "[jvm::internal_install_download] tar_gz_url is required"
+    return 1
+  fi
+
+  # 302 redirect
+  if [ "$(net::status_code $tar_gz_url)" = "302" ]; then
+    local location=$(os::curl -I $tar_gz_url 2>/dev/null | grep location | awk '{print $2}')
+
+    # fix location
+    # stackoverflow: https://stackoverflow.com/questions/70660633/curl-3-url-using-bad-illegal-format-or-missing-url-in-bash-windows
+    location=$(echo $location | sed 's/\r//g')
+
+    # 404
+    if [ "$(net::is_not_found $location)" = "true" ]; then
+      log::error "[jvm::install] invalid version: $version"
+      log::error "[jvm::install] see more version at https://golang.google.cn/dl/"
+      return 1
+    fi
+  else
+    # 404
+    if [ "$(net::is_not_found $tar_gz_url)" = "true" ]; then
+      log::error "[jvm::install] invalid version: $version"
+      log::error "[jvm::install] see more version at https://golang.google.cn/dl/"
+      return 1
+    fi
+  fi
+
+  # download
+  # wget -c $tar_gz_url -O $PLUGIN_JVM_JAVA_DOWNLOAD_TMP
+  log::debug "[$(timestamp)][jvm::internal_install_download] url: $tar_gz_url ..."
+  # os::curl --progress-bar -fSL $tar_gz_url -o $PLUGIN_JVM_JAVA_DOWNLOAD_TMP
+  os::download $PLUGIN_JVM_JAVA_DOWNLOAD_TMP $tar_gz_url
+}
+
+jvm::internal_install_apply_local() {
+  local version=$1
+  if [ -z "$version" ]; then
+    log::error "[jvm::internal_install_apply_local] version is required"
+    return 1
+  fi
+
+  # add prefix v*
+  version=$(vm::version_ensure_prefix_v $version)
+
+  # clean old
+  if [ -d "$PLUGIN_JVM_VERSIONS/$version" ]; then
+    sudo rm -rf $PLUGIN_JVM_VERSIONS/$version
+  fi
+  # decompress
+  sudo tar -C $PLUGIN_JVM_VERSIONS -xzf $PLUGIN_JVM_JAVA_DOWNLOAD_TMP
+  # rename
+  sudo mv $PLUGIN_JVM_VERSIONS/go $PLUGIN_JVM_VERSIONS/$version
+
+  # clean
+  sudo rm -f $PLUGIN_JVM_JAVA_DOWNLOAD_TMP
+}
+
+export -f jvm::install
+
+# install internal processes
+export -f jvm::internal_install_get_download_url
+export -f jvm::internal_install_download
+export -f jvm::internal_install_apply_local

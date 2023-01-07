@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# jvm::prepare prepare info
+jvm::prepare() {
+  [ -s "/Users/zero/.jabba/jabba.sh" ] && source "/Users/zero/.jabba/jabba.sh"
+
+  net::using_smart_proxy
+}
+
+export -f jvm::prepare

@@ -1,0 +1,27 @@
+#!/bin/bash
+
+help() {
+  echo "Usage:"
+  echo "  jvm home"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local version="$1"
+  if [ -z "$version" ]; then
+    log::error "[$(timestamp)] version is required"
+    return 1
+  fi
+
+  jvm::home "$version"
+}
+
+run() {
+  core "$@"
+}
+
+run "$@"

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+jvm::default() {
+  local version="$1"
+  if [ -z "$version" ]; then
+    log::error "[$(timestamp)] version is required"
+    return 1
+  fi
+
+  jvm::prepare
+
+  jabba alias default $version
+}
+
+export -f jvm::default

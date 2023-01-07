@@ -1,0 +1,13 @@
+#!/bin/bash
+
+jvm::list() {
+  jvm::prepare
+  
+  jabba ls
+}
+
+jvm::list_TODO() {
+  ls $PLUGIN_JVM_VERSIONS
+}
+
+export -f jvm::list

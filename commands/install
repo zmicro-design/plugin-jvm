@@ -1,0 +1,44 @@
+#!/bin/bash
+
+help() {
+  echo "Usage:"
+  echo "  jvm install [version]"
+  echo ""
+  echo "Options:"
+  echo "  version    - Install Java version, default: $PLUGIN_JVM_JAVA_DEFAULT_VERSION"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local version=$1
+  if [ -z "$version" ]; then
+    version=$PLUGIN_JVM_JAVA_DEFAULT_VERSION
+  fi
+
+  log::info "installing $version"
+  jvm::install $version
+  if [ "$?" != "0" ]; then
+    log::error "failed to install $version"
+    exit 1
+  fi
+
+  log::success "install ${version} success"
+
+  if [ -f "$HOME/.zshrc" ]; then
+    log::success "load go by reloading env with $(color::success "source $HOME/.zshrc")"
+  elif [ -f "$HOME/.bashrc" ]; then
+    log::success "load go by reloading env with $(color::success "source $HOME/.bashrc")"
+  else
+    log::success "restart your shell to load go"
+  fi
+}
+
+run() {
+  core $@
+}
+
+run $@

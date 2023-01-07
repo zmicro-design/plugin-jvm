@@ -1,0 +1,43 @@
+#!/bin/bash
+
+help() {
+  echo "Usage:"
+  echo "  jvm list"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local current=$(jvm::current)
+  local list=$(jvm::list $@)
+
+  print() {
+    local index=$1
+    local name=$2
+    if [ "$name" = "$current" ]; then
+      log::info "$((index + 1)). ${name} ($(color::green current))"
+    else
+      log::info "$((index + 1)). ${name}"
+    fi
+  }
+
+  local count=$(array::length $list)
+  if [ $count -eq 0 ]; then
+    log "    (no avaliable)"
+    exit 0
+  fi
+
+  log "count: $count"
+  log ""
+
+  array::each print $list
+}
+
+run() {
+  core $@
+}
+
+run $@

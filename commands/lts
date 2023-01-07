@@ -1,0 +1,25 @@
+#!/bin/bash
+
+help() {
+  echo "Use LTS Version"
+  echo ""
+  echo "Usage:"
+  echo "  jvm lts"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  log::info "Use LTS Version $PLIGIN_JVM_JAVA_LTS_VERSION"
+
+  jvm::use $PLIGIN_JVM_JAVA_LTS_VERSION
+}
+
+run() {
+  core $@
+}
+
+run $@

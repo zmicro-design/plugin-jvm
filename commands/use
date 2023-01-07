@@ -1,0 +1,32 @@
+#!/bin/bash
+
+load inquirer
+
+help() {
+  echo "Usage:"
+  echo "  jvm use"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local version=$1
+  
+  if [ -z "$version" ]; then
+    local availables=($(jvm::list))
+    inquirer::select "Select ?" availables version
+  fi
+
+  jvm::use $version
+
+  echo "current: $version ($(go version))"
+}
+
+run() {
+  core $@
+}
+
+run $@

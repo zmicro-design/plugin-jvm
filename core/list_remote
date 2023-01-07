@@ -1,0 +1,22 @@
+#!/bin/bash
+
+jvm::list_remote() {
+  jvm::prepare
+
+  jabba ls-remote
+}
+
+jvm::list_remote_TODO() {
+  local versions=$(os::git ls-remote -t https://github.com/golang/go | awk -F/ '{ print $NF }' | grep go | awk -F go '{print $2}')
+  # local versions=""
+  # for version in ${_versions[@]}; do
+  #   versions="v$version $versions"
+  # done
+  
+  for version in ${versions[@]}; do
+    echo $version
+  done
+}
+
+
+export -f jvm::list_remote

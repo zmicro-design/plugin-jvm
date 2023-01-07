@@ -1,0 +1,25 @@
+#!/bin/bash
+
+help() {
+  echo "Usage:"
+  echo "  jvm exec"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  jvm::exec $@
+  if [ "$?" != "0" ]; then
+    log::error "failed to exec: $@"
+    exit 1
+  fi
+}
+
+run() {
+  core $@
+}
+
+run $@

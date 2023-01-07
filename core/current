@@ -1,0 +1,19 @@
+#!/bin/bash
+
+jvm::current() {
+  jvm::prepare
+
+  jabba current
+}
+
+# jvm::current gets the current version of Java
+jvm::current_TODO() {
+  if [ ! -f "${PLUGIN_JVM_VERSION_CURRENT}" ]; then
+    echo ""
+    return
+  fi
+
+  echo $(cat $PLUGIN_JVM_VERSION_CURRENT)
+}
+
+export -f jvm::current

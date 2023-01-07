@@ -1,0 +1,27 @@
+#!/bin/bash
+
+help() {
+  echo "Usage:"
+  echo "  jvm use"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    help
+    exit 0
+  fi
+
+  local current=$(jvm::current)
+
+  export JAVAHOME=${PLUGIN_JVM_JAVA_HOME}
+  export JAVAPATH=${PLUGIN_JVM_JAVA_PATH}
+  export PATH=$JAVAHOME/bin:$JAVAPATH/bin:$PATH
+
+  echo "${current:-"-"}"
+}
+
+run() {
+  core $@
+}
+
+run $@

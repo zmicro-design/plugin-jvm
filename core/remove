@@ -1,0 +1,44 @@
+#!/bin/bash
+
+jvm::remove() {
+  local version="$1"
+  if [ -z "$version" ]; then
+    log::error "[$(timestamp)] version is required"
+    return 1
+  fi
+
+  jvm::prepare
+
+  jabba uninstall $version
+}
+
+# jvm::remove remove the go version
+# if the version is current, it will be unset
+jvm::remove_TODO() {
+  local version=$1
+  if [ -z "$version" ]; then
+    log::error "[jvm::use] version is required"
+    return 1
+  fi
+
+  # smart detect
+  version=$(vm::version_ensure_prefix_v $version)
+
+  if [ ! -d "$PLUGIN_JVM_VERSIONS/$version" ]; then
+    log::error "[jvm::use] version $version not found"
+    return 1
+  fi
+
+  sudo rm -rf $PLUGIN_JVM_VERSIONS/$version
+
+  if [ "$(jvm::current)" == "$version" ]; then
+    local new_version=$(jvm::list | head -n 1)
+    if [ -n "$new_version" ]; then
+      jvm::use $new_version
+    else
+      echo "" >$PLUGIN_JVM_VERSION_CURRENT
+    fi
+  fi
+}
+
+export -f jvm::remove
