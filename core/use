@@ -10,6 +10,9 @@ jvm::use() {
   jvm::prepare
 
   jabba use $version
+  # if [ "$?" != "0" ]; then
+  #   jvm::install $version
+  # fi
 }
 
 # jvm::use change the current version of go
