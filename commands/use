@@ -23,6 +23,7 @@ core() {
   jvm::use $version
 
   echo "current: $version"
+  java -version
 }
 
 run() {
