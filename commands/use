@@ -22,7 +22,7 @@ core() {
 
   jvm::use $version
 
-  echo "current: $version ($(go version))"
+  echo "current: $version"
 }
 
 run() {

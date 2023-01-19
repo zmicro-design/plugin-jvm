@@ -12,7 +12,7 @@ jvm::remove() {
   jabba uninstall $version
 }
 
-# jvm::remove remove the go version
+# jvm::remove remove the java version
 # if the version is current, it will be unset
 jvm::remove_TODO() {
   local version=$1

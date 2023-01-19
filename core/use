@@ -9,7 +9,10 @@ jvm::use() {
 
   jvm::prepare
 
-  jabba use $version
+  # jabba use $version
+
+  jabba alias default $version
+
   # if [ "$?" != "0" ]; then
   #   jvm::install $version
   # fi

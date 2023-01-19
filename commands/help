@@ -17,7 +17,7 @@ usage() {
   echo "  jvm ls                  - List the Java versions installed"
   echo "  jvm ls-remote           - List all Java versions from remote"
   echo "  jvm current             - Show current Java version"
-  echo "  jvm exec                - Enter new shell with go version for tmp"
+  echo "  jvm exec                - Enter new shell with java version for tmp"
   echo "  jvm home <version>      - Show the specific JAVA_HOME" 
   echo "  jvm default <version>   - Set default Java version"
   echo "  jvm help                - Show help"

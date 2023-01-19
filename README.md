@@ -36,7 +36,7 @@ Usage:
   jvm ls                  - List the Java versions installed
   jvm ls-remote           - List all Java versions from remote
   jvm current             - Show current Java version
-  jvm exec                - Enter new shell with go version for tmp
+  jvm exec                - Enter new shell with java version for tmp
   jvm home <version>      - Show the specific JAVA_HOME
   jvm default <version>   - Set default Java version
   jvm help                - Show help

@@ -18,6 +18,8 @@ core() {
   export PATH=$JAVAHOME/bin:$JAVAPATH/bin:$PATH
 
   echo "${current:-"-"}"
+
+  java --version
 }
 
 run() {

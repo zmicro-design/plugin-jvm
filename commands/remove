@@ -37,7 +37,7 @@ core() {
   log::success "remove ${version} success"
 
   if [ -n "$(jvm::current)" ]; then
-    echo "current: $(jvm::current) ($(go version))"
+    echo "current: $(jvm::current)"
   fi
 }
 
