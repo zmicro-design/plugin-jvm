@@ -1,0 +1,40 @@
+#!/bin/bash
+
+export ZMICRO_DATA_PARENT="${ZMICRO_DATA_PARENT}"
+if [ "$(uname -s)" = "Darwin" ]; then
+  export ZMICRO_DATA_PARENT=/opt
+fi
+
+export PLUGIN_XVM_DATA=${ZMICRO_DATA_PARENT}/data/plugins/jvm
+export PLUGIN_XVM_VERSIONS=${PLUGIN_XVM_DATA}/versions
+export PLUGIN_XVM_VERSION_CURRENT=${PLUGIN_XVM_DATA}/current
+
+version=""
+if [ -f "$PWD/.jvmrc" ]; then
+  version="$(cat $PWD/.jvmrc)"
+else
+  if [ -f "$PLUGIN_XVM_VERSION_CURRENT" ]; then
+    version="$(cat $PLUGIN_XVM_VERSION_CURRENT)"
+  fi
+fi
+
+# jvm
+if [ -z "$version" ]; then
+  export PLUGIN_JVM_JAVA_DEFAULT_VERSION=zulu@1.11.0
+  export version=PLUGIN_JVM_JAVA_DEFAULT_VERSION
+fi
+if [ ! -d "$PLUGIN_XVM_VERSIONS/$version" ]; then
+  if [ -d "$PLUGIN_XVM_VERSIONS" ]; then
+    version=$(ls $PLUGIN_XVM_VERSIONS | grep $version | sort -rV | head -n 1)
+  fi
+fi
+export PLUGIN_JVM_JAVA_CURRENT_VERSION=$version
+
+# java
+# export JAVAHOME=$PLUGIN_XVM_VERSIONS/$version
+# export JAVAPATH=$HOME/.java
+# export PATH=$JAVAPATH/bin:$JAVAHOME/bin:$PATH
+[ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
+
+# usage:
+# [ -s "$ZMICRO_HOME/plugins/jvm/source" ] && \. $ZMICRO_HOME/plugins/jvm/source

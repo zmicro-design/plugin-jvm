@@ -12,6 +12,7 @@ core() {
   fi
 
   local current=$(jvm::current)
+  local default=$(jvm::default)
   local list=$(jvm::list $@)
 
   print() {
@@ -19,6 +20,8 @@ core() {
     local name=$2
     if [ "$name" = "$current" ]; then
       log::info "$((index + 1)). ${name} ($(color::green current))"
+    elif [ "$name" = "$default" ]; then
+      log::info "$((index + 1)). ${name} ($(color::gray default))"
     else
       log::info "$((index + 1)). ${name}"
     fi

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-load inquirer
-
 help() {
   echo "Usage:"
   echo "  jvm env"

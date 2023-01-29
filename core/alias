@@ -1,0 +1,27 @@
+#!/bin/bash
+
+jvm::alias() {
+  jvm::prepare
+
+  # local name="$1"
+  # local version="$2"
+
+  # case $name in
+  # default)
+  #   if [ -z "$version" ]; then
+  #     jvm alias default
+  #     return 0
+  #   fi
+
+  #   jvm alias default $version
+  #   ;;
+  # *)
+  #   log::error "[$(timestamp)] unsupport command: jvm alias $@"
+  #   return 1
+  #   ;;
+  # esac
+
+  jabba alias "$@"
+}
+
+export -f jvm::alias

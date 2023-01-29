@@ -1,25 +1,27 @@
-name: Automate Testing
+name: Test
 
 on:
   push:
+    tags:
+      - "v*"
     branches:
       - master
   pull_request:
     branches:
       - master
-  schedule:
-    - cron: "0 2 * * *"
+  # schedule:
+  #   - cron: "0 2 * * *"
 
 jobs:
   on-success:
-    needs: testing
+    needs: test
     runs-on: ubuntu-latest
-    if: ${{ always() && needs.testing.result == 'success' }}
+    if: ${{ always() && needs.test.result == 'success' }}
     steps:
       - name: Notification Feishu
         uses: whatwewant/action-robot-feishu@v0.0.13
         with:
-          url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
+          url: ${{ secrets.WORKFLOW_FEISHU_BOT_WEBHOOK_URL }}
           title: "✅ 自动化测试：${{ github.repository }}"
           text: |
             分支: ${{ github.ref }}
@@ -28,14 +30,14 @@ jobs:
             状态: 构建成功（https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}）
 
   on-failure:
-    needs: testing
+    needs: test
     runs-on: ubuntu-latest
-    if: ${{ always() && needs.testing.result == 'failure' }}
+    if: ${{ always() && needs.test.result == 'failure' }}
     steps:
       - name: Notification Feishu
         uses: whatwewant/action-robot-feishu@v0.0.13
         with:
-          url: ${{ secrets.FEISHU_BOT_WEBHOOK_URL }}
+          url: ${{ secrets.WORKFLOW_FEISHU_BOT_WEBHOOK_URL }}
           title: "❌ 自动化测试：${{ github.repository }}"
           text: |
             分支: ${{ github.ref }}
@@ -43,8 +45,12 @@ jobs:
             提交人: ${{ github.actor }}
             状态: 构建失败（https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}）
 
-  testing:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
 
     steps:
       - name: Get Current Date
@@ -63,3 +69,19 @@ jobs:
           zmicro jvm -v
           export PATH=$(zmicro bin path):$PATH
           jvm -v
+      
+      - name: Run Test Cases
+        run: zmicro test core
+
+      - name: Use Default
+        run: |
+          zmicro jvm use default
+          export PATH=$(zmicro jvm bin):$PATH
+          java -version
+
+      - name: Use LTS
+        run: |
+          zmicro jvm use lts
+          export PATH=$(zmicro jvm bin):$PATH
+          java -version
+

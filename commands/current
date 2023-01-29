@@ -12,13 +12,18 @@ core() {
   fi
 
   local current=$(jvm::current)
+  if [ -z "$current" ]; then
+    echo "No version is currently set"
+    exit 0
+  fi
 
-  export JAVAHOME=${PLUGIN_JVM_JAVA_HOME}
-  export JAVAPATH=${PLUGIN_JVM_JAVA_PATH}
-  export PATH=$JAVAHOME/bin:$JAVAPATH/bin:$PATH
+  echo "$current"
 
-  echo "${current:-"-"}"
-
+  # export JAVAHOME=${PLUGIN_JVM_JAVA_HOME}
+  # export JAVAPATH=${PLUGIN_JVM_JAVA_PATH}
+  # export PATH=$JAVAHOME/bin:$JAVAPATH/bin:$PATH
+  
+  jvm::prepare
   java -version
 }
 

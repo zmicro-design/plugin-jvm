@@ -2,44 +2,17 @@
 
 # jvm::env applys the env for go
 jvm::env() {
-  echo $PATH | grep $PLUGIN_JVM_JAVA_BIN >> /dev/null 2>&1
+  echo $PATH | grep $PLUGIN_JVM_JAVA_BIN >>/dev/null 2>&1
   if [ $? -ne 0 ]; then
     export PATH=$PATH:$PLUGIN_JVM_JAVA_BIN
   fi
 
-  go env -w JAVA111MODULE=on
-  go env -w JAVAPROXY=https://goproxy.cn,direct
-  go env -w JAVAPATH=$PLUGIN_JVM_JAVA_PATH
-
-  # Donot set JAVABIN, which may cause go install permission into $JAVABIN
-  # go env -w JAVABIN=$JAVABIN
-
-  # Write to SHELL
-  if [ -f $HOME/.bashrc ]; then
-    cat $HOME/.bashrc | grep JAVABIN >> /dev/null 2>&1
-    if [ "$?" != "0" ]; then
-      cat << EOF >> $HOME/.bashrc
-
-# JAVABIN
-export JAVAHOME=${PLUGIN_JVM_JAVA_HOME}
-export JAVAPATH=${PLUGIN_JVM_JAVA_PATH}
-export PATH=\$JAVAHOME/bin:\$JAVAPATH/bin:\$PATH
-EOF
-    fi
-  fi
-
-  if [ -f $HOME/.zshrc ]; then
-    cat $HOME/.zshrc | grep JAVABIN >> /dev/null 2>&1
-    if [ "$?" != "0" ]; then
-      cat << EOF >> $HOME/.zshrc
-
-# JAVABIN
-export JAVAHOME=${PLUGIN_JVM_JAVA_HOME}
-export JAVAPATH=${PLUGIN_JVM_JAVA_PATH}
-export PATH=\$JAVAHOME/bin:\$JAVAPATH/bin:\$PATH
-EOF
-    fi
-  fi
+  local envs=$(
+    cat <<-END
+[ -s "\$ZMICRO_HOME/plugins/jvm/source" ] && \. \$ZMICRO_HOME/plugins/jvm/source
+END
+  )
+  config::profile "# ZMICRO_JVM" "$envs"
 }
 
 export -f jvm::env

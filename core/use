@@ -7,15 +7,22 @@ jvm::use() {
     return 1
   fi
 
+  if [ "$version" = "default" ]; then
+    version=$PLUGIN_JVM_JAVA_DEFAULT_VERSION
+  elif [ "$version" = "lts" ]; then
+    version=$PLUGIN_JVM_JAVA_LTS_VERSION
+  elif [ "$version" = "latest" ]; then
+    version=$PLUGIN_JVM_JAVA_DEFAULT_VERSION
+  fi
+
   jvm::prepare
 
   # jabba use $version
 
   jabba alias default $version
 
-  # if [ "$?" != "0" ]; then
-  #   jvm::install $version
-  # fi
+  # apply env
+  jvm::env
 }
 
 # jvm::use change the current version of go

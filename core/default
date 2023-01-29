@@ -2,10 +2,10 @@
 
 jvm::default() {
   local version="$1"
-  if [ -z "$version" ]; then
-    log::error "[$(timestamp)] version is required"
-    return 1
-  fi
+  # if [ -z "$version" ]; then
+  #   log::error "[$(timestamp)] version is required"
+  #   return 1
+  # fi
 
   jvm::prepare
 

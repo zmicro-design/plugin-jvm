@@ -13,13 +13,13 @@ core() {
     exit 0
   fi
 
-  local version="$1"
-  if [ -z "$version" ]; then
-    log::error "[$(timestamp)] version is required"
-    return 1
+  local default=$(jvm::default)
+  if [ -z "$default" ]; then
+    echo "No version is currently set"
+    exit 0
   fi
 
-  jvm::default "$version"
+  echo "$default"
 }
 
 run() {

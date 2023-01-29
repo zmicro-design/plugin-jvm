@@ -1,0 +1,24 @@
+#!/bin/bash
+
+help() {
+  echo "Usage:"
+  echo "  jvm alias <name> <version>"
+  echo ""
+  echo "Example:"
+  echo "  jvm alias default zulu@1.11.0"
+}
+
+core() {
+  if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "" ] ; then
+    help
+    exit 0
+  fi
+
+  jvm::alias "$@"
+}
+
+run() {
+  core "$@"
+}
+
+run "$@"

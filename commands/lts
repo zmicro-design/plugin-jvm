@@ -13,11 +13,11 @@ core() {
     exit 0
   fi
 
-  log::info "Use LTS Version $PLIGIN_JVM_JAVA_LTS_VERSION"
+  log::info "Use LTS Version $PLUGIN_JVM_JAVA_LTS_VERSION"
 
-  jvm::install $PLIGIN_JVM_JAVA_LTS_VERSION
+  jvm::install $PLUGIN_JVM_JAVA_LTS_VERSION
 
-  jvm::use $PLIGIN_JVM_JAVA_LTS_VERSION
+  jvm::use $PLUGIN_JVM_JAVA_LTS_VERSION
 }
 
 run() {
