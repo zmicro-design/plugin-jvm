@@ -1,7 +1,7 @@
 # JVM - Java Version Manager Plugin for [ZMicro](https://github.com/zcorky/zmicro)
 
 [![Release](https://img.shields.io/github/tag/zmicro-design/plugin-jvm.svg?label=Release)](https://github.com/zmicro-design/plugin-jvm/tags)
-[![Build Status](https://github.com/zmicro-design/plugin-jvm/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/zmicro-design/plugin-jvm/actions/workflows/test.yml)
+[![Build Status](https://github.com/zmicro-design/plugin-jvm/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/zmicro-design/plugin-jvm/actions/workflows/ci.yml)
 [![GitHub issues](https://img.shields.io/github/issues/zmicro-design/plugin-jvm.svg)](https://github.com/zmicro-design/plugin-jvm/issues)
 
 ## Installation
