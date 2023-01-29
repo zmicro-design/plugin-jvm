@@ -22,7 +22,7 @@ core() {
   # export JAVAHOME=${PLUGIN_JVM_JAVA_HOME}
   # export JAVAPATH=${PLUGIN_JVM_JAVA_PATH}
   # export PATH=$JAVAHOME/bin:$JAVAPATH/bin:$PATH
-  
+
   jvm::prepare
   java -version
 }

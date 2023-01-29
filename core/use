@@ -21,6 +21,9 @@ jvm::use() {
 
   jabba alias default $version
 
+  # write
+  echo $version >$PLUGIN_JVM_VERSION_CURRENT
+
   # apply env
   jvm::env
 }

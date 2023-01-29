@@ -1,9 +1,9 @@
 #!/bin/bash
 
 jvm::current() {
-  jvm::prepare
+  [ -s "$ZMICRO_HOME/plugins/jvm/source" ] && \. $ZMICRO_HOME/plugins/jvm/source
 
-  jabba current
+  echo $PLUGIN_JVM_JAVA_CURRENT_VERSION
 }
 
 # jvm::current gets the current version of Java
