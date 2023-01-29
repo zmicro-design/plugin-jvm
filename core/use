@@ -17,7 +17,7 @@ jvm::use() {
 
   jvm::prepare
 
-  # jabba use $version
+  jvm::install $version >>/dev/null
 
   jabba alias default $version
 
