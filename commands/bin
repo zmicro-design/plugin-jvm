@@ -12,7 +12,10 @@ core() {
   fi
 
   # echo $PLUGIN_JVM_JAVA_BIN
-  which java
+  # which java
+
+  [ -s "$ZMICRO_HOME/plugins/jvm/source" ] && \. $ZMICRO_HOME/plugins/jvm/source
+  echo "$JAVA_HOME/bin"
 }
 
 run() {

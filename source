@@ -37,6 +37,7 @@ export PLUGIN_JVM_JAVA_CURRENT_VERSION=$version
 # export JAVAHOME=$PLUGIN_XVM_VERSIONS/$version
 # export JAVAPATH=$HOME/.java
 # export PATH=$JAVAPATH/bin:$JAVAHOME/bin:$PATH
+# export JAVA_HOME=${JAVA_HOME}
 [ -s "$HOME/.jabba/jabba.sh" ] && source "$HOME/.jabba/jabba.sh"
 
 # usage:
