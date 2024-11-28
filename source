@@ -5,36 +5,36 @@ if [ "$(uname -s)" = "Darwin" ]; then
   export ZMICRO_DATA_PARENT=/opt
 fi
 
-export PLUGIN_XVM_DATA=${ZMICRO_DATA_PARENT}/data/plugins/jvm
-export PLUGIN_XVM_VERSIONS=${PLUGIN_XVM_DATA}/versions
-export PLUGIN_XVM_VERSION_CURRENT=${PLUGIN_XVM_DATA}/current
+export PLUGIN_JVM_DATA=${ZMICRO_DATA_PARENT}/data/plugins/jvm
+export PLUGIN_JVM_VERSIONS=${PLUGIN_JVM_DATA}/versions
+export PLUGIN_JVM_VERSION_CURRENT=${PLUGIN_JVM_DATA}/current
 
-version=""
+export PLUGIN_JVM_SOURCE_VERSION=""
 if [ -f "$PWD/.jvmrc" ]; then
-  version="$(cat $PWD/.jvmrc)"
+  PLUGIN_JVM_SOURCE_VERSION="$(cat $PWD/.jvmrc)"
 else
-  if [ -f "$PLUGIN_XVM_VERSION_CURRENT" ]; then
-    version="$(cat $PLUGIN_XVM_VERSION_CURRENT)"
+  if [ -f "$PLUGIN_JVM_VERSION_CURRENT" ]; then
+    PLUGIN_JVM_SOURCE_VERSION="$(cat $PLUGIN_JVM_VERSION_CURRENT)"
   fi
 fi
 
 # jvm
-if [ -z "$version" ]; then
-  export PLUGIN_JVM_JAVA_DEFAULT_VERSION=zulu@1.11.0
-  export version=PLUGIN_JVM_JAVA_DEFAULT_VERSION
+if [ -z "$PLUGIN_JVM_SOURCE_VERSION" ]; then
+  export PLUGIN_JVM_JAVA_DEFAULT_VERSION=${PLUGIN_JVM_JAVA_DEFAULT_VERSION:-"zulu@1.11.0"}
+  export PLUGIN_JVM_SOURCE_VERSION=$PLUGIN_JVM_JAVA_DEFAULT_VERSION
 fi
-if [ ! -d "$PLUGIN_XVM_VERSIONS/$version" ]; then
-  if [ -d "$PLUGIN_XVM_VERSIONS" ]; then
-    if [ -n "$(ls $PLUGIN_XVM_VERSIONS)" ]; then
-      version=$(ls $PLUGIN_XVM_VERSIONS | grep $version | sort -rV | head -n 1)
+if [ ! -d "$PLUGIN_JVM_VERSIONS/$PLUGIN_JVM_SOURCE_VERSION" ]; then
+  if [ -d "$PLUGIN_JVM_VERSIONS" ]; then
+    if [ -n "$(ls $PLUGIN_JVM_VERSIONS)" ]; then
+      PLUGIN_JVM_SOURCE_VERSION=$(ls $PLUGIN_JVM_VERSIONS | grep $PLUGIN_JVM_SOURCE_VERSION | sort -rV | head -n 1)
     fi
   fi
 fi
 
-export PLUGIN_JVM_JAVA_CURRENT_VERSION=$version
+export PLUGIN_JVM_JAVA_CURRENT_VERSION=$PLUGIN_JVM_SOURCE_VERSION
 
 # java
-# export JAVAHOME=$PLUGIN_XVM_VERSIONS/$version
+# export JAVAHOME=$PLUGIN_JVM_VERSIONS/$version
 # export JAVAPATH=$HOME/.java
 # export PATH=$JAVAPATH/bin:$JAVAHOME/bin:$PATH
 # export JAVA_HOME=${JAVA_HOME}
