@@ -85,13 +85,9 @@ jobs:
           export PATH=$(zmicro jvm bin):$PATH
           java -version
 
-      - name: Set up QEMU
+      - name: Setup Docker
         if: matrix.os == 'ubuntu-latest'
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        if: matrix.os == 'ubuntu-latest'
-        run: zmicro package install --bootstrap-service docker-buildx
+        uses: zmicro-design/action-setup-docker@v1
 
       - name: Test in Docker
         if: matrix.os == 'ubuntu-latest'
